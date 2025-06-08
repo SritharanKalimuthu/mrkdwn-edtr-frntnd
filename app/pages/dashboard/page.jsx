@@ -26,8 +26,8 @@ export default function Dashboard() {
   
   const [stats, setStats] = useState({
     totalBoards: 0,
-    teamMembers: 8,
-    growthRate: 24.5,
+    teamMembers: 0,
+    growthRate: 18.5,
     activeProjects: 0
   });
   
@@ -472,14 +472,14 @@ export default function Dashboard() {
             icon={FileText}
             title="Total Boards"
             value={stats.totalBoards}
-            change={12}
+            change={8}
             color="from-blue-500 to-blue-600"
           />
           <StatCard
             icon={Users}
             title="Team Members"
             value={stats.teamMembers}
-            change={8}
+            change={0}
             color="from-emerald-500 to-emerald-600"
           />
           <StatCard
@@ -493,7 +493,7 @@ export default function Dashboard() {
             icon={Target}
             title="Active Projects"
             value={stats.activeProjects}
-            change={15}
+            change={10}
             color="from-orange-500 to-orange-600"
           />
         </div>

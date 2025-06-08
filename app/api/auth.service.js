@@ -40,12 +40,44 @@ export const updateUsername = async ( userData ) =>{
     };
 }
 
+export const DeleteUser = async ( userData ) =>{
+    try{
+        const response = await api.delete(`/user/delete`, {
+            data: userData
+        });
+        return response;
+    }catch (err){
+        console.log("Error deleting user", err);
+        return err;
+    };
+}
+
 export const otpVerification = async( userData ) =>{
     try{
         const response = await api.post(`/auth`, userData);
         return response;
     }catch (err){
         console.log("Error logging in", err);
+        return err;
+    }
+}
+
+export const sendPasswordResetEmail = async( email ) => {
+    try{
+        const response = await api.post(`/auth/sendreseturl`, {email});
+        return response;
+    }catch(err){
+        console.log("Error sending password reset email", err);
+        return err;
+    }
+}
+
+export const ResetPassword = async( userData ) => {
+    try{
+        const response = await api.post(`/auth/resetpassword`, userData);
+        return response;
+    }catch(err){
+        console.log("Error resetting password", err);
         return err;
     }
 }

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { getUser, registerUser, loginUser, otpVerification } from "../api/auth.service";
+import { getUser, registerUser, loginUser, otpVerification, sendPasswordResetEmail } from "../api/auth.service";
 import { toast } from 'react-hot-toast';
 
 import EmailStep from "./FormSteps/EmailStep";
@@ -64,7 +64,6 @@ export default function AnimatedCardForm() {
       setError("Please enter a valid email address");
       return;
     }
-
     setIsSubmitting(true);
     setError("");
 
@@ -173,6 +172,30 @@ export default function AnimatedCardForm() {
       }
     } catch (err) {
       setError("Registration failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    setIsSubmitting(true);
+    const email = formData.email;
+    
+    if (!email) {
+      toast.error('Email is required to send reset link');
+      setIsSubmitting(false);
+      return;
+    }
+    
+    try {
+      const res = await sendPasswordResetEmail(email);
+      console.log(res.status);
+      if(res.status == 200){
+        toast.success('Password reset link sent to your email');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "An error occurred");
+      toast.error('Failed to send password reset link');
     } finally {
       setIsSubmitting(false);
     }
@@ -328,6 +351,7 @@ export default function AnimatedCardForm() {
             formData={formData}
             handleChange={handleChange}
             error={error}
+            handleForgotPassword={handleForgotPassword}
             onSubmit={handleLoginSubmit}
             onPrevious={prevStep}
             isSubmitting={isSubmitting}
