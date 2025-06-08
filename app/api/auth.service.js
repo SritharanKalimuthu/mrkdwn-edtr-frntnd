@@ -1,4 +1,5 @@
 import api from "./axios.instance";
+import axios from "axios";
 
 export const getUser = async(email) => {
     try {
@@ -55,6 +56,16 @@ export const DeleteUser = async ( userData ) =>{
 export const otpVerification = async( userData ) =>{
     try{
         const response = await api.post(`/auth`, userData);
+
+        const { accessToken, refreshToken } = response.data;
+        await axios.post("/api/auth/setcookie", {
+            accessToken,
+            refreshToken,
+        }, {
+        headers: {
+            "Content-Type": "application/json"
+        }});
+
         return response;
     }catch (err){
         console.log("Error logging in", err);

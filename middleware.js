@@ -54,17 +54,29 @@ export function middleware(request) {
     pathname.startsWith('/images') ||
     pathname.startsWith('/fonts');
 
-  if (isPublic) return NextResponse.next();
+  if (isPublic) {
+    return NextResponse.next();
+  }
 
-  const token = request.cookies.get('accessToken')?.value || request.cookies.get('refreshToken')?.value;
+  // Log all cookies received (visible in server logs)
+  const allCookies = request.cookies.getAll();
+  console.log('Cookies received in middleware:', allCookies);
+
+  // Try to get accessToken cookie
+  const accessTokenCookie = request.cookies.get('accessToken');
+  const refreshTokenCookie = request.cookies.get('refreshToken');
+
+  // Prefer accessToken but fallback to refreshToken if needed
+  const token = accessTokenCookie?.value || refreshTokenCookie?.value;
 
   if (!token) {
-    console.log('No access token cookie found');
+    console.log('No access token or refresh token cookie found, redirecting to /');
     return NextResponse.redirect(new URL('/', request.url));
   }
 
   return NextResponse.next();
 }
+
 
 export const config = {
   matcher: ['/((?!_next|favicon.ico|images|fonts|api).*)'],
